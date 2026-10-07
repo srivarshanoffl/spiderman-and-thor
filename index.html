@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Thor vs Doom: Multiversal Clash</title>
+    <link rel="stylesheet" href="/src/style.css" />
+  </head>
+  <body>
+    <div id="app">
+      <div id="game-container"></div>
+      <div id="ui-layer" class="hidden">
+        <div class="top-bars">
+          <div id="thor-health-container" class="health-bar-container">
+            <div class="character-name">THOR</div>
+            <div class="health-bar-bg"><div id="thor-health" class="health-bar-fill"></div></div>
+          </div>
+          <div id="doom-health-container" class="health-bar-container">
+            <div class="character-name">DOCTOR DOOM</div>
+            <div class="health-bar-bg"><div id="doom-health" class="health-bar-fill doom-fill"></div></div>
+          </div>
+        </div>
+        <div class="controls-hint">A/D: Move | SPACE: Jump | LMB: Attack Combo | RMB: Heavy Strike | E: Lightning Slam | F: God of Thunder | SHIFT: Dodge</div>
+      </div>
+      <div id="intro-cinematic">
+        <h1>THOR VS DOOM</h1>
+        <h2>ACT 1: MULTIVERSAL CLASH</h2>
+        <p>The universe fractures. Reality bleeds.</p>
+        <button id="start-btn">BEGIN BATTLE</button>
+      </div>
+    </div>
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>
