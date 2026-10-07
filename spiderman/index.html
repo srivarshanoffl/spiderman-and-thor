@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Spider-Man: Web Chase | Event Browser Game</title>
+  <meta name="description" content="Cinematic 2.5D superhero browser game where Spider-Man chases a fast-moving falcon across Manhattan, diagnoses an unexpected web shooter event handler malfunction, and executes a high-speed web capture.">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🕷️</text></svg>">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <noscript>
+    <div style="color: #fff; background: #000; padding: 20px; text-align: center; font-family: sans-serif;">
+      Please enable JavaScript to play Spider-Man: Web Chase.
+    </div>
+  </noscript>
+  <div id="game-wrapper">
+    <!-- Main Phaser WebGL Canvas Host Container -->
+    <main id="game-container" role="main" aria-label="Spider-Man Web Chase Game Viewport"></main>
+
+    <!-- Quick Tester Action Bar (Testing / Dev Mode) -->
+    <aside id="tester-bar" class="tester-toolbar" aria-label="Developer Testing Controls">
+      <button id="btn-quick-debug-shooter" class="btn-tester-action" title="Immediately debug web-shooter, verify telemetry, and resume chase (Key: B)">
+        <span class="btn-tester-glow"></span>
+        <span class="btn-tester-icon">⚡</span>
+        <span class="btn-tester-label">DEBUG WEBSHOOTER</span>
+        <span class="btn-tester-badge">PASS</span>
+      </button>
+    </aside>
+
+    <!-- Quick Toast Notification for Tester Feedback -->
+    <div id="tester-toast" class="tester-toast" role="status" aria-live="polite"></div>
+
+    <!-- IN-GAME HEADS UP DISPLAY (HUD) -->
+    <div id="game-hud" class="screen-hidden" aria-live="polite">
+      <header class="hud-top-bar">
+        <!-- Mission Objective Card -->
+        <div class="hud-mission-card">
+          <span class="hud-tag">TARGET PURSUIT</span>
+          <div class="hud-target-title">
+            <span class="hud-target-icon">✦</span>
+            <span>GOLDEN CYBER-FALCON</span>
+          </div>
+        </div>
+
+        <!-- Bird Proximity / Chase Assist Meter -->
+        <div class="hud-chase-meter" id="hud-chase-meter" aria-label="Target Distance Tracker">
+          <div class="meter-label-row">
+            <span class="meter-title">TARGET RANGE</span>
+            <span class="meter-dist-val" id="meter-dist-text">380 M</span>
+          </div>
+          <div class="meter-track">
+            <div class="meter-fill" id="meter-fill-bar" style="width: 50%;"></div>
+          </div>
+        </div>
+
+        <!-- Web Shooter Hardware Status -->
+        <div class="hud-status-badge" id="hud-shooter-status">
+          <span class="status-indicator-dot" id="hud-status-dot"></span>
+          <span id="hud-status-label">WEB SHOOTER: NOMINAL</span>
+        </div>
+      </header>
+
+      <!-- Dynamic Context Action Prompt Banner -->
+      <footer class="hud-prompt-banner" id="hud-prompt-banner">
+        <span class="hud-prompt-key" id="hud-prompt-key">SPACE / CLICK</span>
+        <span id="hud-prompt-text">AIM NEAR WEB ANCHOR TO SHOOT &amp; SWING</span>
+      </footer>
+    </div>
+
+    <!-- TITLE & MISSION BRIEFING SCREEN -->
+    <div id="title-overlay" class="title-screen-overlay">
+      <header class="hero-logo-box">
+        <span class="title-subtag">MARVEL CINEMATIC BROWSER EXPERIENCE</span>
+        <h1 class="main-title-text">SPIDER-MAN<br><span class="main-title-accent">WEB CHASE</span></h1>
+      </header>
+
+      <section class="title-briefing-box">
+        <p>A high-speed <span class="briefing-highlight">Golden Cyber-Falcon</span> has escaped across Manhattan airspace. Launch into the skyline, latch onto rooftop anchor points, and maintain momentum to intercept the target before it vanishes over the Hudson River.</p>
+      </section>
+
+      <div class="title-controls-card">
+        <div class="control-pill">
+          <span class="key-tag">SPACE / CLICK</span>
+          <span>SHOOT WEB &amp; SWING</span>
+        </div>
+        <div class="control-pill">
+          <span class="key-tag">RELEASE</span>
+          <span>BOOST MOMENTUM</span>
+        </div>
+        <div class="control-pill">
+          <span class="key-tag">A / D or ← / →</span>
+          <span>AIR STEER</span>
+        </div>
+        <div class="control-pill">
+          <span class="key-tag">E</span>
+          <span>DIAGNOSTICS (ON FAULT)</span>
+        </div>
+      </div>
+
+      <button id="btn-start-chase" class="btn-launch" aria-label="Launch Pursuit Mission">
+        <span>INTERCEPT TARGET</span>
+        <span>▶</span>
+      </button>
+    </div>
+
+    <!-- MISSION COMPLETE CELEBRATION SCREEN -->
+    <div id="complete-overlay" class="complete-screen-overlay screen-hidden">
+      <header class="hero-logo-box">
+        <span class="title-subtag" style="color: var(--green-ok);">ALL SYSTEMS SYNCHRONIZED</span>
+        <h2 class="main-title-text" style="font-size: 38px;">TARGET CAPTURED<br><span style="color: var(--green-ok);">MISSION ACCOMPLISHED</span></h2>
+      </header>
+
+      <section class="title-briefing-box" style="border-color: rgba(48, 209, 88, 0.4);">
+        <p>The Golden Falcon is safely resting on Spider-Man's gauntlet. Mk-IV Web Shooter event handler rewired to <code>fireWeb()</code>, solenoid gate unjammed, manifold pressure stabilized at 450 PSI nominal.</p>
+      </section>
+
+      <div class="title-controls-card" style="border-color: rgba(48, 209, 88, 0.3);">
+        <div class="control-pill">
+          <span class="key-tag" style="color: var(--green-ok);">STATUS</span>
+          <span>100% OPERATIONAL</span>
+        </div>
+        <div class="control-pill">
+          <span class="key-tag" style="color: var(--gold-bird);">FALCON</span>
+          <span>SAFELY RETRIEVED</span>
+        </div>
+        <div class="control-pill">
+          <span class="key-tag" style="color: var(--cyan-glow);">HANDLER</span>
+          <span>fireWeb() NOMINAL</span>
+        </div>
+      </div>
+
+      <button id="btn-replay-chase" class="btn-launch" style="background: linear-gradient(135deg, #0d7045 0%, #159c60 100%); border-color: #30d158;" aria-label="Replay Mission">
+        <span>REPLAY CHASE</span>
+        <span>↺</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- PHASER 4.2.1 (Local bundle with fallback) -->
+  <script src="js/phaser.min.js"></script>
+
+  <!-- GAME ARCHITECTURE & SUBSYSTEMS -->
+  <script src="config.js"></script>
+  <script src="js/AudioManager.js"></script>
+  <script src="js/InputManager.js"></script>
+  <script src="js/ParallaxCity.js"></script>
+  <script src="js/AnchorSystem.js"></script>
+  <script src="js/SpiderManAnimator.js"></script>
+  <script src="js/BirdAnimator.js"></script>
+  <script src="js/ChaseController.js"></script>
+  <script src="js/SpiderHero.js"></script>
+  <script src="js/BirdTarget.js"></script>
+  <script src="js/SwingSystem.js"></script>
+  <script src="js/CameraController.js"></script>
+  <script src="js/FXManager.js"></script>
+  <script src="js/WebShooterDiagnostic.js"></script>
+  <script src="js/DebugInterface.js"></script>
+
+  <!-- MAIN ORCHESTRATION & STATE ENGINE -->
+  <script src="game.js"></script>
+</body>
+</html>
